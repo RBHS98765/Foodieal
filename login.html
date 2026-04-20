@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foodieal | Login & Sign Up</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+    <style>
+:root {
+    --primary:      #FF622D;
+    --primary-dark: #d94e20;
+    --primary-glow: rgba(255,98,45,0.22);
+    --bg:           #FDF6EC;
+    --card:         #ffffff;
+    --text:         #1A1A1A;
+    --muted:        #888;
+    --border:       #E8DCCC;
+    --input-bg:     #FAFAF8;
+    --radius:       26px;
+    --font-head:    'DM Serif Display', serif;
+    --font-body:    'DM Sans', sans-serif;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; }
+body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    background-image:
+        radial-gradient(ellipse at 10% 10%, rgba(255,98,45,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 90% 90%, rgba(255,166,35,0.06) 0%, transparent 55%);
+}
+
+/* ═══ WRAPPER ═══ */
+.auth-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 1020px;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.1), 0 4px 20px rgba(255,98,45,0.08);
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+/* ═══ LEFT PANEL ═══ */
+.form-panel {
+    padding: 2.8rem 2.8rem 2.4rem;
+    overflow-y: auto;
+    max-height: 96vh;
+}
+.form-panel::-webkit-scrollbar { width: 4px; }
+.form-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* Brand */
+.brand {
+    display: flex; align-items: center; gap: 0.45rem;
+    text-decoration: none; margin-bottom: 2rem;
+}
+.brand-icon { font-size: 1.35rem; }
+.brand-name {
+    font-family: var(--font-head);
+    font-size: 1.45rem;
+    color: var(--primary);
+}
+
+/* Tabs */
+.auth-tabs {
+    display: flex;
+    background: var(--bg);
+    border-radius: 50px;
+    padding: 4px;
+    margin-bottom: 1.8rem;
+    border: 1.5px solid var(--border);
+    width: fit-content;
+}
+.tab-btn {
+    background: none; border: none;
+    padding: 0.45rem 1.5rem;
+    border-radius: 50px;
+    font-family: var(--font-body);
+    font-size: 0.88rem; font-weight: 600;
+    color: var(--muted); cursor: pointer;
+    transition: all 0.22s;
+}
+.tab-btn.active {
+    background: var(--primary); color: white;
+    box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+/* Heading */
+.form-heading h1 {
+    font-family: var(--font-head);
+    font-size: 2rem; font-weight: 400;
+    color: var(--text); line-height: 1.18;
+}
+.form-heading p {
+    font-size: 0.85rem; color: var(--muted);
+    margin-top: 0.35rem; margin-bottom: 1.5rem;
+}
+
+/* ── OAuth Buttons ── */
+.social-btns { display: flex; gap: 0.7rem; margin-bottom: 1.3rem; flex-direction: column; }
+.social-btn {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.6rem; padding: 0.72rem 1rem;
+    border: 1.5px solid var(--border); border-radius: 12px;
+    background: white; font-family: var(--font-body);
+    font-size: 0.84rem; font-weight: 600; color: var(--text);
+    cursor: pointer; transition: all 0.2s;
+    width: 100%; position: relative;
+}
+.social-btn:hover {
+    border-color: var(--primary);
+    background: rgba(255,98,45,0.03);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+}
+.social-btn:disabled {
+    opacity: 0.6; cursor: not-allowed; transform: none;
+}
+.social-btn .btn-loader {
+    display: none;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,98,45,0.25);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    position: absolute; right: 1rem;
+}
+.social-btn.loading .btn-loader { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Google specific */
+.social-btn.google-btn { border-color: #dadce0; }
+.social-btn.google-btn:hover { border-color: #4285F4; background: rgba(66,133,244,0.03); }
+
+/* Facebook specific */
+.social-btn.fb-btn { border-color: #1877f2; }
+.social-btn.fb-btn:hover { background: rgba(24,119,242,0.04); }
+.fb-icon {
+    width: 18px; height: 18px;
+    background: #1877F2;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.fb-icon svg { display: block; }
+
+.divider {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin-bottom: 1.3rem; color: var(--muted); font-size: 0.78rem;
+}
+.divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* Form */
+.auth-form { display: flex; flex-direction: column; gap: 0.8rem; }
+.hidden { display: none !important; }
+
+.field-group { display: flex; flex-direction: column; gap: 0.32rem; }
+.field-group label {
+    font-size: 0.77rem; font-weight: 600; color: var(--text);
+    letter-spacing: 0.2px;
+}
+.field-group label .req { color: var(--primary); }
+
+.input-wrap {
+    position: relative; display: flex; align-items: center;
+}
+.input-wrap .fi {
+    position: absolute; left: 0.88rem; color: #c0b8b0;
+    pointer-events: none; transition: color 0.2s;
+    display: flex; align-items: center;
+}
+.input-wrap input,
+.input-wrap select {
+    width: 100%;
+    padding: 0.7rem 0.9rem 0.7rem 2.45rem;
+    border: 1.5px solid var(--border);
+    border-radius: 11px;
+    background: var(--input-bg);
+    font-family: var(--font-body);
+    font-size: 0.87rem; color: var(--text);
+    outline: none; transition: all 0.2s;
+    appearance: none; -webkit-appearance: none;
+}
+.input-wrap input:focus,
+.input-wrap select:focus {
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.input-wrap:focus-within .fi { color: var(--primary); }
+.eye-toggle {
+    position: absolute; right: 0.8rem;
+    background: none; border: none; cursor: pointer;
+    color: #ccc; padding: 0.2rem; display: flex; align-items: center;
+    transition: color 0.2s;
+}
+.eye-toggle:hover { color: var(--primary); }
+
+/* Two-col */
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+
+/* Food preference pills */
+.pref-wrap { display: flex; gap: 0.55rem; }
+.pref-opt { flex: 1; position: relative; }
+.pref-opt input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+.pref-opt label {
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.35rem; padding: 0.58rem 0.4rem;
+    border: 1.5px solid var(--border); border-radius: 10px;
+    cursor: pointer; font-size: 0.79rem; font-weight: 600;
+    color: var(--muted); background: var(--input-bg);
+    transition: all 0.18s;
+}
+.pref-opt input:checked + label {
+    border-color: var(--primary); color: var(--primary);
+    background: rgba(255,98,45,0.05);
+}
+.pref-opt label:hover { border-color: var(--primary); }
+
+/* Checkbox util */
+.check-row {
+    display: flex; align-items: center;
+    justify-content: space-between; font-size: 0.8rem;
+}
+.check-label {
+    display: flex; align-items: center;
+    gap: 0.48rem; font-size: 0.8rem;
+    cursor: pointer; color: var(--text); font-weight: 500;
+    user-select: none;
+}
+.check-label input { display: none; }
+.check-box {
+    width: 17px; height: 17px;
+    border: 2px solid var(--border); border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    background: white; flex-shrink: 0; transition: all 0.18s;
+}
+.check-label input:checked ~ .check-box {
+    background: var(--primary); border-color: var(--primary);
+}
+.check-label input:checked ~ .check-box::after {
+    content: '';
+    width: 4px; height: 8px;
+    border: 2px solid white;
+    border-top: none; border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+    display: block;
+}
+
+/* Terms */
+.terms-label {
+    display: flex; align-items: flex-start;
+    gap: 0.5rem; font-size: 0.79rem; color: var(--muted);
+    cursor: pointer; line-height: 1.5; user-select: none;
+}
+.terms-label input { display: none; }
+.terms-label .check-box { margin-top: 1px; flex-shrink: 0; }
+.terms-label input:checked ~ .check-box {
+    background: var(--primary); border-color: var(--primary);
+}
+.terms-label input:checked ~ .check-box::after {
+    content: '';
+    width: 4px; height: 8px;
+    border: 2px solid white;
+    border-top: none; border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+    display: block;
+}
+.terms-label a { color: var(--primary); text-decoration: none; font-weight: 600; }
+
+/* Submit */
+.submit-btn {
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.88rem 2rem; background: var(--primary); color: white;
+    border: none; border-radius: 12px; font-family: var(--font-body);
+    font-weight: 700; font-size: 0.95rem; cursor: pointer;
+    transition: all 0.22s; box-shadow: 0 6px 20px var(--primary-glow);
+    width: 100%; margin-top: 0.2rem;
+}
+.submit-btn:hover {
+    background: var(--primary-dark); transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(255,98,45,0.35);
+}
+.submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* Forgot */
+.forgot-link {
+    color: var(--primary); text-decoration: none;
+    font-weight: 600; font-size: 0.8rem; transition: opacity 0.2s;
+}
+.forgot-link:hover { opacity: 0.7; }
+
+/* Switch */
+.switch-row {
+    margin-top: 1.4rem; text-align: center;
+    font-size: 0.82rem; color: var(--muted);
+}
+.switch-row a { color: var(--primary); text-decoration: none; font-weight: 700; }
+
+/* Message */
+.form-msg {
+    padding: 0.65rem 1rem; border-radius: 10px;
+    font-size: 0.81rem; font-weight: 500; display: none;
+}
+.form-msg.success {
+    display: block; background: rgba(39,174,96,0.09);
+    color: #1e8449; border: 1px solid rgba(39,174,96,0.22);
+}
+.form-msg.error {
+    display: block; background: rgba(231,76,60,0.09);
+    color: #c0392b; border: 1px solid rgba(231,76,60,0.2);
+}
+
+/* Password strength */
+.pw-strength { margin-top: 0.35rem; }
+.pw-strength-bar {
+    display: flex; gap: 4px; margin-bottom: 0.2rem;
+}
+.pw-seg {
+    height: 3px; flex: 1; border-radius: 2px;
+    background: var(--border); transition: background 0.25s;
+}
+.pw-seg.weak   { background: #e74c3c; }
+.pw-seg.fair   { background: #f39c12; }
+.pw-seg.good   { background: #27ae60; }
+.pw-seg.strong { background: #1abc9c; }
+.pw-label { font-size: 0.7rem; color: var(--muted); }
+
+/* ═══ RIGHT VISUAL PANEL ═══ */
+.visual-panel {
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    background: #1A0800;
+}
+.food-mosaic {
+    position: absolute; inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 3px;
+}
+.food-mosaic img {
+    width: 100%; height: 100%; object-fit: cover;
+    display: block; filter: saturate(1.15) brightness(0.85);
+}
+.food-mosaic img:nth-child(1) { grid-row: 1 / 3; }
+.food-mosaic img:nth-child(4) { grid-row: 2 / 4; }
+.visual-overlay {
+    position: absolute; inset: 0; z-index: 1;
+    background: linear-gradient(155deg, rgba(255,98,45,0.78) 0%, rgba(20,8,0,0.86) 55%, rgba(8,3,0,0.93) 100%);
+}
+.visual-ring {
+    position: absolute; z-index: 2;
+    width: 380px; height: 380px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.07);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 55px rgba(255,255,255,0.025), 0 0 0 110px rgba(255,255,255,0.015);
+    pointer-events: none;
+}
+.visual-content {
+    position: relative; z-index: 3;
+    text-align: center; color: white;
+    padding: 2rem 2.5rem;
+}
+.v-badge {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 0.42rem 1rem; border-radius: 50px;
+    font-size: 0.76rem; font-weight: 600;
+    letter-spacing: 0.4px; margin-bottom: 1.6rem;
+    animation: badgePulse 2.5s ease-in-out infinite;
+}
+@keyframes badgePulse {
+    0%,100% { opacity:.85; transform:scale(1); }
+    50%     { opacity:1; transform:scale(1.025); }
+}
+.v-title {
+    font-family: var(--font-head);
+    font-size: 2.55rem; font-weight: 400;
+    line-height: 1.16; margin-bottom: 0.9rem;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.4);
+}
+.v-title em { color: #FFB38E; font-style: italic; }
+.v-sub {
+    font-size: 0.87rem; opacity: 0.72;
+    line-height: 1.65; max-width: 255px;
+    margin: 0 auto 1.9rem;
+}
+.v-chips { display: flex; gap: 0.65rem; justify-content: center; flex-wrap: wrap; }
+.v-chip {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 12px; padding: 0.6rem 0.9rem;
+    font-size: 0.77rem; font-weight: 600; color: white;
+    display: flex; align-items: center; gap: 0.38rem;
+    animation: chipFloat 3s ease-in-out infinite;
+}
+.v-chip:nth-child(2) { animation-delay: 0.7s; }
+.v-chip:nth-child(3) { animation-delay: 1.4s; }
+@keyframes chipFloat {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-7px); }
+}
+.chip-save {
+    background: var(--primary); padding: 0.1rem 0.42rem;
+    border-radius: 5px; font-size: 0.66rem;
+}
+.v-dots { display: flex; gap: 5px; justify-content: center; margin-top: 1.8rem; }
+.vd {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.3); transition: all 0.3s;
+}
+.vd.on { background: white; width: 18px; border-radius: 3px; }
+
+/* ═══ RESPONSIVE ═══ */
+@media (max-width: 840px) {
+    .auth-wrapper { grid-template-columns: 1fr; max-width: 480px; }
+    .visual-panel { min-height: 260px; order: -1; }
+    .food-mosaic { grid-template-rows: 1fr 1fr; }
+    .food-mosaic img:nth-child(5),
+    .food-mosaic img:nth-child(6) { display: none; }
+    .v-title { font-size: 1.9rem; }
+    .visual-ring { width: 260px; height: 260px; }
+}
+@media (max-width: 480px) {
+    .form-panel { padding: 2rem 1.6rem; }
+    .field-row { grid-template-columns: 1fr; }
+    .social-btns { flex-direction: column; }
+}
+    </style>
+</head>
+<body>
+
+<div class="auth-wrapper">
+
+    <!-- ══════════ LEFT: FORMS ══════════ -->
+    <div class="form-panel">
+
+        <a href="/" class="brand">
+            <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 35 L20 80 C20 85 25 90 30 90 L70 90 C75 90 80 85 80 80 L80 35" fill="#FF622D"/>
+                <path d="M35 35 L35 25 C35 15 45 10 50 10 C55 10 65 15 65 25 L65 35" stroke="#F77F00" strokeWidth="6" fill="none" strokeLinecap="round"/>
+                <rect x="40" y="50" width="4" height="25" rx="2" fill="#FCBF49"/>
+                <rect x="48" y="50" width="4" height="25" rx="2" fill="#FCBF49"/>
+                <rect x="56" y="50" width="4" height="25" rx="2" fill="#FCBF49"/>
+                <rect x="38" y="70" width="24" height="4" rx="2" fill="#FCBF49"/>
+                <path d="M15 50 L8 50 L8 45 L0 52 L8 59 L8 54 L15 54 Z" fill="#F77F00"/>
+                <path d="M85 50 L92 50 L92 45 L100 52 L92 59 L92 54 L85 54 Z" fill="#F77F00"/>
+                <circle cx="75" cy="25" r="12" fill="#FCBF49"/>
+                <text x="75" y="29" textAnchor="middle" fill="#2B2B2B" fontSize="12" fontWeight="bold">₹</text>
+            </svg>
+            <span class="brand-name">Foodieal</span>
+        </a>
+
+        <!-- ══ LOGIN ══ -->
+        <div id="login-section">
+            <div class="form-heading">
+                <h1>Holla,<br>Welcome Back</h1>
+                <p>Hey, welcome back to your favourite food deals!</p>
+            </div>
+
+            <!-- OAuth Buttons -->
+            <div class="social-btns">
+                <button class="social-btn google-btn" id="login-google-btn" onclick="handleOAuth('google')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Continue with Google
+                    <div class="btn-loader"></div>
+                </button>
+                <button class="social-btn fb-btn" id="login-fb-btn" onclick="handleOAuth('facebook')">
+                    <div class="fb-icon">
+                        <svg width="10" height="18" viewBox="0 0 10 18" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.5 1H7C5.67 1 4.5 2.17 4.5 3.5V6H2V9H4.5V17H7.5V9H9.5L10 6H7.5V3.5C7.5 3.22 7.72 3 8 3H9.5V1Z"/>
+                        </svg>
+                    </div>
+                    Continue with Facebook
+                    <div class="btn-loader"></div>
+                </button>
+            </div>
+
+            <div class="divider">or continue with email</div>
+
+            <form class="auth-form" id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-msg" id="login-msg"></div>
+
+                <div class="field-group">
+                    <label>Email Address <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <span class="fi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+                        <input type="email" id="l-email" placeholder="you@email.com" required>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label>Password <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <span class="fi"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                        <input type="password" id="l-pw" placeholder="Enter your password" required>
+                        <button type="button" class="eye-toggle" onclick="toggleEye('l-pw',this)" title="Show/hide">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="check-row">
+                    <label class="check-label">
+                        <input type="checkbox" id="l-remember" checked>
+                        <span class="check-box"></span>
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-link" onclick="handleForgotPassword(event)">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="submit-btn" id="login-submit-btn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    Sign In to Foodieal
+                </button>
+            </form>
+
+            <div class="switch-row">
+                Don't have an account? <a href="#" onclick="showSignup();return false">Sign Up</a>
+            </div>
+        </div><!-- end login -->
+
+        <!-- ══ SIGN UP ══ -->
+        <div id="signup-section" class="hidden">
+            <div class="form-heading">
+                <h1>Create<br>Account</h1>
+                <p>Join thousands saving on every food order!</p>
+            </div>
+
+            <!-- OAuth Buttons -->
+            <div class="social-btns">
+                <button class="social-btn google-btn" id="signup-google-btn" onclick="handleOAuth('google')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Sign up with Google
+                    <div class="btn-loader"></div>
+                </button>
+                <button class="social-btn fb-btn" id="signup-fb-btn" onclick="handleOAuth('facebook')">
+                    <div class="fb-icon">
+                        <svg width="10" height="18" viewBox="0 0 10 18" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9.5 1H7C5.67 1 4.5 2.17 4.5 3.5V6H2V9H4.5V17H7.5V9H9.5L10 6H7.5V3.5C7.5 3.22 7.72 3 8 3H9.5V1Z"/>
+                        </svg>
+                    </div>
+                    Sign up with Facebook
+                    <div class="btn-loader"></div>
+                </button>
+            </div>
+
+            <div class="divider">or fill in the details</div>
+
+            <form class="auth-form" id="signup-form" onsubmit="handleSignup(event)">
+                <div class="form-msg" id="signup-msg"></div>
+
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>Full Name <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="fi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                            <input type="text" id="su-name" placeholder="Full name" required>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Contact No. <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="fi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.27 18a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.36 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.34 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                            <input type="tel" id="su-phone" placeholder="+91 98765 43210">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <label>Email Address <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <span class="fi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+                        <input type="email" id="su-email" placeholder="you@email.com" required>
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group">
+                        <label>Password <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="fi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+                            <input type="password" id="su-pw" placeholder="Min. 8 chars" required oninput="checkPwStrength(this.value)">
+                            <button type="button" class="eye-toggle" onclick="toggleEye('su-pw',this)">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                        <div class="pw-strength" id="pw-strength" style="display:none">
+                            <div class="pw-strength-bar">
+                                <div class="pw-seg" id="ps1"></div>
+                                <div class="pw-seg" id="ps2"></div>
+                                <div class="pw-seg" id="ps3"></div>
+                                <div class="pw-seg" id="ps4"></div>
+                            </div>
+                            <div class="pw-label" id="pw-label">Weak</div>
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Confirm Password <span class="req">*</span></label>
+                        <div class="input-wrap">
+                            <span class="fi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+                            <input type="password" id="su-cpw" placeholder="Repeat password" required>
+                            <button type="button" class="eye-toggle" onclick="toggleEye('su-cpw',this)">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Food Preference -->
+                <div class="field-group">
+                    <label>Food Preference <span class="req">*</span></label>
+                    <div class="pref-wrap">
+                        <div class="pref-opt">
+                            <input type="radio" name="food-pref" id="pref-veg" value="veg">
+                            <label for="pref-veg">🥗 Veg</label>
+                        </div>
+                        <div class="pref-opt">
+                            <input type="radio" name="food-pref" id="pref-nonveg" value="nonveg" checked>
+                            <label for="pref-nonveg">🍗 Non-Veg</label>
+                        </div>
+                        <div class="pref-opt">
+                            <input type="radio" name="food-pref" id="pref-both" value="both">
+                            <label for="pref-both">🍽️ Both</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- City -->
+                <div class="field-group">
+                    <label>City <span class="req">*</span></label>
+                    <div class="input-wrap">
+                        <span class="fi"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 14 8 14s8-8.75 8-14a8 8 0 0 0-8-8z"/></svg></span>
+                        <select id="su-city" required>
+                            <option value="" disabled selected>Select your city</option>
+                            <option>Hyderabad</option>
+                            <option>Bangalore</option>
+                            <option>Mumbai</option>
+                            <option>Delhi / NCR</option>
+                            <option>Chennai</option>
+                            <option>Pune</option>
+                            <option>Kolkata</option>
+                            <option>Ahmedabad</option>
+                            <option>Other</option>
+                        </select>
+                        <svg style="position:absolute;right:.85rem;pointer-events:none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </div>
+
+                <!-- Terms -->
+                <label class="terms-label">
+                    <input type="checkbox" id="su-terms" required>
+                    <span class="check-box"></span>
+                    I agree to the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a> of Foodieal
+                </label>
+
+                <button type="submit" class="submit-btn" id="signup-submit-btn">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                    Create My Account
+                </button>
+            </form>
+
+            <div class="switch-row">
+                Already have an account? <a href="#" onclick="showLogin();return false">Sign In</a>
+            </div>
+        </div><!-- end signup -->
+
+    </div><!-- end form-panel -->
+
+    <!-- ══════════ RIGHT: VISUAL ══════════ -->
+    <div class="visual-panel">
+        <div class="food-mosaic">
+            <img src="https://ministryofcurry.com/wp-content/uploads/2024/06/chicken-biryani-5.jpg" alt="Biryani">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/Eq_it-na_pizza-margherita_sep2005_sml.jpg" alt="Pizza">
+            <img src="https://spicecravings.com/wp-content/uploads/2020/10/Paneer-Tikka-Featured-1.jpg" alt="Paneer Tikka">
+            <img src="https://t4.ftcdn.net/jpg/02/74/99/01/360_F_274990113_ffVRBygLkLCZAATF9lWymzE6bItMVuH1.jpg" alt="Burger">
+            <img src="https://www.cookwithmanali.com/wp-content/uploads/2015/10/Gulab-Jamun-Recipe.jpg" alt="Dessert">
+            <img src="https://www.allrecipes.com/thmb/mvO1mRRH1zTz1SvbwBCTz78CRJI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/67700_RichPastaforthePoorKitchen_ddmfs_4x3_2284-220302ec8328442096df370dede357d7.jpg" alt="Pasta">
+        </div>
+        <div class="visual-overlay"></div>
+        <div class="visual-ring"></div>
+        <div class="visual-content">
+            <div class="v-badge" id="v-badge"><span>⚡</span> Real-time price comparison</div>
+            <h2 class="v-title" id="v-title">One App,<br><em>Best Deals.</em><br>Always.</h2>
+            <p class="v-sub" id="v-sub">Compare prices across Swiggy, Zomato & Uber Eats instantly. Save up to ₹180 on every order.</p>
+            <div class="v-chips">
+                <div class="v-chip">🍗 Biryani <span class="chip-save">Save ₹87</span></div>
+                <div class="v-chip">🍕 Pizza <span class="chip-save">Save ₹55</span></div>
+                <div class="v-chip">🍔 Burger <span class="chip-save">Save ₹63</span></div>
+            </div>
+        </div>
+    </div>
+
+</div><!-- end auth-wrapper -->
+
+<!-- ══════════ SCRIPTS ══════════ -->
+<script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    /* ── Supabase Client ── */
+    const SUPABASE_URL  = 'https://eflvbvbnqogdtntxptby.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmbHZidmJucW9nZHRudHhwdGJ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTgwMDAsImV4cCI6MjA4OTQ5NDAwMH0.WZd19xjf8H1d2O83jB5IXrGflLyV64rHDKIgHBnSv_8';
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+    /* ── Expose functions to global scope ── */
+
+    // OAuth — Google or Facebook
+    window.handleOAuth = async function(provider) {
+        const btnIds = provider === 'google'
+            ? ['login-google-btn', 'signup-google-btn']
+            : ['login-fb-btn', 'signup-fb-btn'];
+
+        btnIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.classList.add('loading'); el.disabled = true; }
+        });
+
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider,
+                options: {
+                    redirectTo: `${window.location.origin}/auth-callback.html`,
+                    queryParams: provider === 'google'
+                        ? { access_type: 'offline', prompt: 'consent' }
+                        : {},
+                },
+            });
+            if (error) throw error;
+            // Browser will redirect — no need to reset buttons
+        } catch (err) {
+            console.error(`${provider} OAuth error:`, err);
+            toast(`⚠️ ${err.message || 'OAuth sign-in failed. Please try again.'}`);
+            btnIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) { el.classList.remove('loading'); el.disabled = false; }
+            });
+        }
+    };
+
+    // Email/password login
+    window.handleLogin = async function(e) {
+        e.preventDefault();
+        const msg  = document.getElementById('login-msg');
+        const btn  = document.getElementById('login-submit-btn');
+        const email = document.getElementById('l-email').value.trim();
+        const pw    = document.getElementById('l-pw').value;
+
+        btn.disabled = true;
+        btn.textContent = 'Signing in…';
+        setMsg(msg, '', '');
+
+        try {
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password: pw });
+            if (error) throw error;
+            setMsg(msg, 'success', `✓ Welcome back! Redirecting you now…`);
+            setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+        } catch (err) {
+            setMsg(msg, 'error', `✕ ${err.message || 'Login failed. Please check your credentials.'}`);
+            btn.disabled = false;
+            btn.textContent = 'Sign In to Foodieal';
+        }
+    };
+
+    // Email/password sign up
+    window.handleSignup = async function(e) {
+        e.preventDefault();
+        const msg   = document.getElementById('signup-msg');
+        const btn   = document.getElementById('signup-submit-btn');
+        const name  = document.getElementById('su-name').value.trim();
+        const email = document.getElementById('su-email').value.trim();
+        const pw    = document.getElementById('su-pw').value;
+        const cpw   = document.getElementById('su-cpw').value;
+        const city  = document.getElementById('su-city').value;
+        const pref  = document.querySelector('input[name="food-pref"]:checked')?.value || 'both';
+
+        if (pw !== cpw) { setMsg(msg, 'error', '✕ Passwords do not match.'); return; }
+        if (pw.length < 8) { setMsg(msg, 'error', '✕ Password must be at least 8 characters.'); return; }
+
+        btn.disabled = true;
+        btn.textContent = 'Creating account…';
+        setMsg(msg, '', '');
+
+        try {
+            const { data, error } = await supabase.auth.signUp({
+                email,
+                password: pw,
+                options: {
+                    data: { full_name: name, city, food_preference: pref },
+                    emailRedirectTo: `${window.location.origin}/auth-callback.html`,
+                },
+            });
+            if (error) throw error;
+
+            // Supabase may require email confirmation depending on project settings
+            if (data.user && data.user.identities?.length === 0) {
+                setMsg(msg, 'error', '✕ An account with this email already exists. Please sign in.');
+            } else {
+                setMsg(msg, 'success', '✓ Account created! Check your email to confirm, then sign in. 🎉');
+                setTimeout(() => { setMsg(msg, '', ''); showLogin(); }, 3000);
+            }
+        } catch (err) {
+            setMsg(msg, 'error', `✕ ${err.message || 'Sign up failed. Please try again.'}`);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg> Create My Account`;
+        }
+    };
+
+    // Forgot password
+    window.handleForgotPassword = async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('l-email').value.trim();
+        if (!email) { toast('📧 Enter your email address first.'); return; }
+
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                redirectTo: `${window.location.origin}/auth-callback.html`,
+            });
+            if (error) throw error;
+            toast('✓ Password reset email sent!');
+        } catch (err) {
+            toast(`⚠️ ${err.message || 'Could not send reset email.'}`);
+        }
+    };
+
+    /* ── If user is already logged in, skip to index ── */
+    supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) window.location.href = 'index.html';
+    });
+
+    /* ── Helper: set message box state ── */
+    function setMsg(el, type, text) {
+        el.className = 'form-msg' + (type ? ' ' + type : '');
+        el.textContent = text;
+    }
+
+    /* ── Toast notification ── */
+    window.toast = function(msg) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        Object.assign(t.style, {
+            position:'fixed', bottom:'2rem', left:'50%',
+            transform:'translateX(-50%) translateY(16px)',
+            background:'#1A1A1A', color:'white',
+            padding:'0.7rem 1.5rem', borderRadius:'50px',
+            fontSize:'0.84rem', fontWeight:'600', zIndex:'9999',
+            boxShadow:'0 8px 24px rgba(0,0,0,0.2)',
+            opacity:'0', transition:'all 0.28s ease',
+            fontFamily:'DM Sans, sans-serif', whiteSpace:'nowrap',
+            pointerEvents:'none',
+        });
+        document.body.appendChild(t);
+        requestAnimationFrame(() => {
+            t.style.opacity = '1';
+            t.style.transform = 'translateX(-50%) translateY(0)';
+        });
+        setTimeout(() => {
+            t.style.opacity = '0';
+            t.style.transform = 'translateX(-50%) translateY(16px)';
+            setTimeout(() => t.remove(), 300);
+        }, 2800);
+    };
+</script>
+
+<script>
+    /* ── Non-module UI helpers ── */
+
+    function showLogin() {
+        document.getElementById('login-section').classList.remove('hidden');
+        document.getElementById('signup-section').classList.add('hidden');
+        const tabLogin = document.getElementById('tab-login');
+        const tabSignup = document.getElementById('tab-signup');
+        if (tabLogin) tabLogin.classList.add('active');
+        if (tabSignup) tabSignup.classList.remove('active');
+        setVisual('login');
+    }
+    function showSignup() {
+        document.getElementById('signup-section').classList.remove('hidden');
+        document.getElementById('login-section').classList.add('hidden');
+        const tabSignup = document.getElementById('tab-signup');
+        const tabLogin = document.getElementById('tab-login');
+        if (tabSignup) tabSignup.classList.add('active');
+        if (tabLogin) tabLogin.classList.remove('active');
+        setVisual('signup');
+    }
+    function setVisual(mode) {
+        const badge = document.getElementById('v-badge');
+        const title = document.getElementById('v-title');
+        const sub   = document.getElementById('v-sub');
+        if (mode === 'signup') {
+            badge.innerHTML = '<span>🎉</span> 50,000+ happy members';
+            title.innerHTML = 'Join the<br><em>Foodieal</em><br>Family!';
+            sub.textContent = 'Get personalised deals, save money on every order, and eat smarter every single day.';
+        } else {
+            badge.innerHTML = '<span>⚡</span> Real-time price comparison';
+            title.innerHTML = 'One App,<br><em>Best Deals.</em><br>Always.';
+            sub.textContent = 'Compare prices across Swiggy, Zomato & Uber Eats instantly. Save up to ₹180 on every order.';
+        }
+    }
+
+    function toggleEye(id, btn) {
+        const inp = document.getElementById(id);
+        const show = inp.type === 'password';
+        inp.type = show ? 'text' : 'password';
+        btn.style.color = show ? 'var(--primary)' : '#ccc';
+    }
+
+    function checkPwStrength(val) {
+        const wrap = document.getElementById('pw-strength');
+        const label = document.getElementById('pw-label');
+        const segs = ['ps1','ps2','ps3','ps4'].map(id => document.getElementById(id));
+
+        if (!val) { wrap.style.display = 'none'; return; }
+        wrap.style.display = 'block';
+
+        let score = 0;
+        if (val.length >= 8)  score++;
+        if (val.length >= 12) score++;
+        if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        const levels  = ['weak', 'fair', 'good', 'strong'];
+        const labels  = ['Weak', 'Fair', 'Good', 'Strong 💪'];
+        const colors  = ['weak', 'fair', 'good', 'strong'];
+
+        segs.forEach((s, i) => {
+            s.className = 'pw-seg ' + (i < score ? colors[score - 1] : '');
+        });
+        label.textContent = labels[score - 1] || 'Too short';
+        label.style.color = score >= 3 ? '#27ae60' : score === 2 ? '#f39c12' : '#e74c3c';
+    }
+
+
+</script>
+</body>
+</html>
