@@ -1,0 +1,84 @@
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "orderNumber": {
+      "type": "string",
+      "description": "Unique order ID"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "placed",
+        "confirmed",
+        "preparing",
+        "out_for_delivery",
+        "delivered"
+      ],
+      "default": "placed"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "platform": {
+            "type": "string"
+          },
+          "restaurantName": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "totalAmount": {
+      "type": "number"
+    },
+    "savings": {
+      "type": "number"
+    },
+    "deliveryAddress": {
+      "type": "string"
+    },
+    "platformBreakdown": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "platform": {
+            "type": "string"
+          },
+          "items": {
+            "type": "number"
+          },
+          "subtotal": {
+            "type": "number"
+          },
+          "deliveryFee": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "estimatedDelivery": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "orderNumber",
+    "items",
+    "totalAmount"
+  ]
+}

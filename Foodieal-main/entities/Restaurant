@@ -1,0 +1,119 @@
+{
+  "name": "Restaurant",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Restaurant name"
+    },
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly identifier"
+    },
+    "location": {
+      "type": "string",
+      "description": "Area in Hyderabad"
+    },
+    "cuisine": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Cuisine types"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Rating out of 5"
+    },
+    "deliveryTime": {
+      "type": "string",
+      "description": "Estimated delivery time"
+    },
+    "image": {
+      "type": "string",
+      "description": "Restaurant image URL"
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "menu": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "isVeg": {
+            "type": "boolean"
+          },
+          "prices": {
+            "type": "object",
+            "properties": {
+              "swiggy": {
+                "type": "object",
+                "properties": {
+                  "base": {
+                    "type": "number"
+                  },
+                  "fee": {
+                    "type": "number"
+                  },
+                  "discount": {
+                    "type": "number"
+                  }
+                }
+              },
+              "zomato": {
+                "type": "object",
+                "properties": {
+                  "base": {
+                    "type": "number"
+                  },
+                  "fee": {
+                    "type": "number"
+                  },
+                  "discount": {
+                    "type": "number"
+                  }
+                }
+              },
+              "ubereats": {
+                "type": "object",
+                "properties": {
+                  "base": {
+                    "type": "number"
+                  },
+                  "fee": {
+                    "type": "number"
+                  },
+                  "discount": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "name",
+    "slug",
+    "location"
+  ]
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authenticating...</title>
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: #FDF6EC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #E8DCCC;
+            border-top-color: #FF622D;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="spinner"></div>
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const SUPABASE_URL = 'https://eflvbvbnqogdtntxptby.supabase.co';
+        const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmbHZidmJucW9nZHRudHhwdGJ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTgwMDAsImV4cCI6MjA4OTQ5NDAwMH0.WZd19xjf8H1d2O83jB5IXrGflLyV64rHDKIgHBnSv_8';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
+
+        // Handle the OAuth callback
+        supabase.auth.getSession().then(({ data: { session }, error }) => {
+            if (error) {
+                console.error('Auth error:', error);
+                window.location.href = 'login.html?error=' + encodeURIComponent(error.message);
+                return;
+            }
+
+            if (session) {
+                // Successfully authenticated, redirect to home
+                window.location.href = 'index.html';
+            } else {
+                // No session, redirect to login
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

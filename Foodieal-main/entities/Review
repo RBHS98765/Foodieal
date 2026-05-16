@@ -1,0 +1,47 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "restaurantId": {
+      "type": "string",
+      "description": "Restaurant ID being reviewed"
+    },
+    "restaurantName": {
+      "type": "string"
+    },
+    "menuItemId": {
+      "type": "string",
+      "description": "Optional menu item ID"
+    },
+    "menuItemName": {
+      "type": "string"
+    },
+    "orderId": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "comment": {
+      "type": "string"
+    },
+    "userName": {
+      "type": "string"
+    },
+    "userEmail": {
+      "type": "string"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "restaurantId",
+    "rating"
+  ]
+}
